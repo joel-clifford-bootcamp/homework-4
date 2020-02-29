@@ -1,0 +1,53 @@
+.rules{
+    width: 50%;
+    margin: 15px auto;
+}
+
+.difficulty{
+    font-weight: bold;
+}
+
+.easy{
+    color:green;
+}
+
+.medium{
+    color:orange;
+}
+
+.hard{
+    color:red;
+}
+
+.inline{
+    display: inline;
+}
+
+.start-btn{
+    padding: 5px 10px;
+}
+
+.banner{
+    padding: 20px;
+    background-color: purple;
+    color: white;
+}
+
+.text-center{
+    margin: 0 auto;
+    margin-top: 30px;
+    width: 50%;
+}
+
+.question{
+    margin-bottom: 20px;
+}
+
+.timer{
+display: inline;
+
+}
+
+.score{
+    float: right;
+}
