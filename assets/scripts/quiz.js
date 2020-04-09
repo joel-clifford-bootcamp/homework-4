@@ -1,5 +1,6 @@
 
     var score = 0;
+    var timer;
     var triviaUrl = "https://opentdb.com/api.php?amount=20&category=18&type=multiple";
     var questions;
     var correctAnswerPrinted = false;
@@ -7,16 +8,20 @@
     var timeElapsed = 0;
     var totalTime = 120;
 
+    var questionEl;
 
     $(document).ready(function(){
 
         localStorage.setItem("currentScore",0);
+
+        questionEl = $(".question");
 
         updateTimer();
 
         $.ajax({
             type: "get",
             url: triviaUrl,
+            timeout: 1500,
             success: function (response) {
             
                 questions = response.results;
@@ -25,14 +30,19 @@
 
                 renderQuestion();
 
-                window.setInterval(() => {
+                timer = window.setInterval(() => {
 
                     timeElapsed++;
 
                     updateTimer();
 
-                }, 1000);
-                  
+                }, 1000);   
+            },
+            error: function (request, status, error){
+
+                if(error === "timeout"){
+                    $(".question").text("Error: Request to Opentdb.com timed out. Refresh page to try again")
+                }
             }
         });
     });
@@ -41,8 +51,6 @@
     function renderQuestion()
     {
         var question = questions[questionIndex];
-
-        var questionEl = $(".question");
 
         questionEl.empty();
 
@@ -220,10 +228,12 @@
 
     function updateTimer()
     {
-
         if(timeElapsed >= totalTime)
         {
-            window.clearInterval();
+            window.clearInterval(timer);
+
+            $(".timer").text("0:00");
+
             endQuiz();
         }
         
@@ -231,13 +241,75 @@
         var minutesRemaining = Math.floor(timeRemaining / 60);
         var secondsRemaining = timeRemaining % 60; 
 
-        $(".timer").text("Time Remaining: " + minutesRemaining + ":" + secondsRemaining.toString().padStart(2,"0"));
+        var percentRemaining = Math.floor(100 * (totalTime - timeElapsed) / totalTime);
+        $(".progress-bar").attr("aria-valuenow", percentRemaining);
+        $(".progress-bar").attr("style", "width:" + percentRemaining + "%");
+        
+        $(".timer").text(minutesRemaining + ":" + secondsRemaining.toString().padStart(2,"0"));
     }
 
     function endQuiz(){
 
-        window.localStorage.setItem("currentScore",score.toString());
-        
-        window.location.href = "scores.html";
+        questionEl.empty();
+        $(".answers").empty();
+
+        var titleEl = $("<h2>").text("Time's Up!");
+
+        var scoreHeaderEl = $("<p>").text("Your score is:");
+
+        var scoreEl = $("<h1>").text(score,toString());
+
+        var instructionEl = $("<p>").text("Enter your name to submit this score");
+
+        var formEl = $("<form>").addClass("form-inline d-flex justify-content-center");
+
+        var inputEl = $("<input>")
+        .addClass("form-control form-control-sm player-name")
+        .attr("id","playerId");
+
+        var buttonEl = $("<button>")
+        .attr("type","button")
+        .addClass("btn btn-primary btn-sm")
+        .text("Submit")
+        .click(event => {
+
+            event.preventDefault();
+
+            var currentScore = {
+                "name" : $("#playerId").val(),
+                "score" : score
+            };
+
+            appendScore(currentScore);
+
+            window.location.href = "scores.html";
+
+        });
+
+        questionEl.append(titleEl);
+        questionEl.append(scoreHeaderEl);
+        questionEl.append(scoreEl);
+        questionEl.append(instructionEl);
+        questionEl.append(formEl);
+        formEl.append(inputEl);
+        formEl.append(buttonEl);
 
     }
+
+// Add current score to high local storage array of score objects
+function appendScore(score)
+{
+    var quizScores = localStorage.getItem("quizScores");
+
+    if(quizScores === null) {
+        console.log("quizScores undefined");
+        quizScores = [];
+    }
+    else{
+        quizScores = JSON.parse(quizScores);
+    }
+
+    quizScores.push(score);
+
+    window.localStorage.setItem("quizScores",JSON.stringify(quizScores));
+}

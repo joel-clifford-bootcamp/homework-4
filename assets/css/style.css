@@ -43,11 +43,38 @@
     margin-bottom: 20px;
 }
 
+.progress{
+    width: 100%;
+    height: 10px;
+    transition: width 1s;
+}
+
+
 .timer{
-display: inline;
+
+    display: block; 
+    z-index: 1;
 
 }
 
 .score{
     float: right;
+}
+
+.player-name{
+    margin-right: 10px;
+}
+
+.form-inline{
+    padding: 0 auto;
+}
+
+.current-score{
+    color: white;
+    font-weight: bold;
+}
+
+.scores{
+    padding-top:15px;
+    max-width: 400px;
 }
