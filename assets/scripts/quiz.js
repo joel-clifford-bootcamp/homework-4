@@ -107,11 +107,19 @@
     // Print Correct answer with event listener
     function printCorrectAnswer(question){
 
-        var button = $("<button>").attr("type","button").addClass("list-group-item list-group-item-action")
+        var button = $("<button>")
+            .attr("type","button")
+            .attr("data-clicked","false")
+            .addClass("list-group-item list-group-item-action")
         
         button.html(question.correct_answer).text();
 
         button.click(function(){
+
+            // prevent double clicking
+            if($(this).attr("data-clicked")==="true") return;
+
+            $(this).attr("data-clicked","true");
 
             var value = getQuestionValue();
 
@@ -137,8 +145,7 @@
         correctAnswerPrinted = true;
     }
 
-    function correctChoiceAnimation(event, value)
-    {
+    function correctChoiceAnimation(event, value){
 
         var p = $("<p>").text("+" + value);
 
@@ -162,12 +169,21 @@
 
     function printIncorrectAnswer(question){
 
-        var button = $("<button>").attr("type","button").addClass("list-group-item list-group-item-action")
+        var button = $("<button>")
+            .attr("type","button")
+            .attr("data-clicked","false")
+            .addClass("list-group-item list-group-item-action")
         
         button.html(question.incorrect_answers[0]).text();
 
         button.click(function()
             {
+                console.log(this);
+        
+                if($(this).attr("data-clicked")==="true") return;
+
+                $(this).attr("data-clicked","true");
+
                 incorrectChoiceAnimation(event);
 
                 timeElapsed += 10;
@@ -230,9 +246,9 @@
     {
         if(timeElapsed >= totalTime)
         {
-            window.clearInterval(timer);
+            $(".timer").text("Time Remaining: 0:00");
 
-            $(".timer").text("0:00");
+            window.clearInterval(timer);
 
             endQuiz();
         }
@@ -244,8 +260,14 @@
         var percentRemaining = Math.floor(100 * (totalTime - timeElapsed) / totalTime);
         $(".progress-bar").attr("aria-valuenow", percentRemaining);
         $(".progress-bar").attr("style", "width:" + percentRemaining + "%");
-        
-        $(".timer").text(minutesRemaining + ":" + secondsRemaining.toString().padStart(2,"0"));
+
+        if(timeRemaining <= 0){
+            minutesRemaining = 0;
+            secondsRemaining = 0;
+        }
+
+
+        $(".timer").text(`Time Remaining: ${minutesRemaining}:${secondsRemaining.toString().padStart(2,"0")}`);
     }
 
     function endQuiz(){
@@ -275,8 +297,12 @@
 
             event.preventDefault();
 
+            const playerId = $("#playerId").val();
+
+            if(playerId.length === 0) return;
+
             var currentScore = {
-                "name" : $("#playerId").val(),
+                "name" : playerId,
                 "score" : score
             };
 

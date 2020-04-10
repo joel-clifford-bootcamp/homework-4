@@ -14,11 +14,9 @@ $(document).ready(event => {
 
         event.preventDefault();
 
-        const emptyArray = [];
+        window.localStorage.removeItem("quizScores");
 
-        window.localStorage.setItem("quizScores",JSON.stringify(emptyArray));
-
-        renderScores(emptyArray);
+        renderScores(null);
 
     });
 });
@@ -26,10 +24,12 @@ $(document).ready(event => {
 // Draw scores in table
 function renderScores(allScores){
 
+    scoresEl.empty();
+
     if(allScores === null || allScores.length === 0) return;
 
     // Get unique scores and sort in descending order
-    const sortedScores =  [...new Set(allScores.map(x => x.score))].sort((a,b) => b.score - a.score)
+    const sortedScores =  [...new Set(allScores.map(x => x.score).sort((a,b) => b - a))];
 
     // iterate over allScores, sorted in descending order by score, and print each
     allScores.sort((a,b) => b.score - a.score).forEach(score => {
@@ -57,3 +57,4 @@ function renderScore(idx, score){
 
     scoresEl.append(row);
 }
+
