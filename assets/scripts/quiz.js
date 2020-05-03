@@ -21,7 +21,7 @@
         $.ajax({
             type: "get",
             url: triviaUrl,
-            timeout: 1500,
+            timeout: 2500,
             success: function (response) {
             
                 questions = response.results;
