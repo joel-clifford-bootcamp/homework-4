@@ -266,7 +266,6 @@
             secondsRemaining = 0;
         }
 
-
         $(".timer").text(`Time Remaining: ${minutesRemaining}:${secondsRemaining.toString().padStart(2,"0")}`);
     }
 

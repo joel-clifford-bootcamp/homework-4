@@ -43,11 +43,11 @@ function renderScores(allScores){
 // print single row of high scores table
 function renderScore(idx, score){
 
-    row =  $("<div>").addClass("row");
+    row =  $("<div>").addClass("list-group-item d-flex");
 
-    idxCol = $("<div>").addClass("col-md-1 text-right").text(idx + ".");
-    nameCol = $("<div>").addClass("col-md-9 text-left").text(score.name);
-    scoreCol = $("<div>").addClass("col-md-2 text-right").text(score.score);
+    idxCol = $("<div>").addClass("p-2 flex-left").text(idx + ".");
+    nameCol = $("<div>").addClass("p-2 flex-fill text-left").text(score.name);
+    scoreCol = $("<div>").addClass("p-2 flex-rigth").text(score.score);
 
     row.append(idxCol);
     row.append(nameCol);
