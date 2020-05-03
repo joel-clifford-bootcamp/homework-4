@@ -178,8 +178,6 @@
 
         button.click(function()
             {
-                console.log(this);
-        
                 if($(this).attr("data-clicked")==="true") return;
 
                 $(this).attr("data-clicked","true");
@@ -327,7 +325,6 @@ function appendScore(score)
     var quizScores = localStorage.getItem("quizScores");
 
     if(quizScores === null) {
-        console.log("quizScores undefined");
         quizScores = [];
     }
     else{
